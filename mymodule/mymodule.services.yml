@@ -1,0 +1,4 @@
+services:
+ mymodule.page_json:
+  class: Drupal\mymodule\PageJsonController
+  arguments: ['@config.factory']

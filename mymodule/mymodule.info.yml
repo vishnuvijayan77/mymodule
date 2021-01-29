@@ -1,0 +1,6 @@
+name: 'My Custom Module'
+type: module
+description: 'Custom module for to alter Site Information Form'
+core: 8.x
+package: 'Custom'
+version: '8.x-1.0'

@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * @file
+ * Contains singer_seo.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_help().
+ */
+function mymodule_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the My Module module.
+    case 'help.page.mymodule':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom module') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function mymodule_form_system_site_information_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Get default value for Site API field.
+  $site_api = \Drupal::config('system.site')->get('siteapikey') ?? "No API Key yet";
+  // Site API field.
+  $form['site_information']['site_api_key'] = [
+    '#type' => 'textfield',
+    '#title' => t('Site API Key'),
+    '#weight' => 1000,
+    '#default_value' => $site_api,
+  ];
+  $form['actions']['submit']['#value'] = "Update Configuration";
+  // Define custom submit handler function.
+  $form['actions']['submit']['#submit'][] = 'mymodule_custom_form_submit';
+}
+
+/**
+ * Custom submit handler for Site Information form.
+ */
+function mymodule_custom_form_submit($form, FormStateInterface $form_state) {
+
+  $config = \Drupal::getContainer()->get('config.factory')->getEditable('system.site');
+  $config->set('name', $form_state->getValue('site_name'))
+    ->set('mail', $form_state->getValue('site_mail'))
+    ->set('slogan', $form_state->getValue('site_slogan'))
+    ->set('page.front', $form_state->getValue('site_frontpage'))
+    ->set('page.403', $form_state->getValue('site_403'))
+    ->set('page.404', $form_state->getValue('site_404'))
+    ->set('siteapikey', $form_state->getValue('site_api_key'))
+    ->save();
+
+  // Display message after update.
+  drupal_set_message(t("Site API Key has been updated with the value: ") . $config->get('siteapikey'));
+
+}

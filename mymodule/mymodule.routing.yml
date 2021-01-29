@@ -1,0 +1,10 @@
+page_json:
+  path: '/page_json/{node}'
+  defaults:
+    _controller: 'Drupal\mymodule\Controller\PageJsonController::getPageJson'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      node:
+        type: entity:node
